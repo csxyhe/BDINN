@@ -10,6 +10,7 @@ The complete code is coming soon!
 
 The implementation is **fully based on PyTorch**, making it easy to integrate and use. Feel free to give it a try!
 
+![pic](https://github.com/csxyhe/BDINN/blob/img/receptiveField.png)
 
 
 ### Requirements
