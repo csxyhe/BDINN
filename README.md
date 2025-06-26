@@ -9,6 +9,7 @@ The complete code is coming soon!
 **A plug-and-play banded deformable convolutional layer** significantly reduces the number of learnable parameters compared to standard deformable convolutional layers, providing **a more efficient and stable alternative** for training.
  
  The receptive field at each position is modulated by a rotation scalar, a stretch factor, and an optional re-scale factor, resulting in a banded shape as follows:
+
 ![pic](https://github.com/csxyhe/BDINN/blob/img/receptiveField.png)
 
 **The implementation is fully based on PyTorch**, making it easy to integrate and use. Feel free to give it a try!
