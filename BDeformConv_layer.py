@@ -9,8 +9,8 @@ class BDeformConv(nn.Module):
     def __init__(self, inc, outc, kernel_size=3, padding=1, stride=1, bias=None, max_sscale=3, min_sscale=0.5, isReScale=True):
         """
         args:
-            max_sscale: (optional) default set is 3, can be set to `None`. Max threshold for the sketch scalar.
-            min_sscale: (optional) default set is 0.5, can be set to `None`. Min threshold for the sketch scalar.
+            max_sscale: (optional) default set is 3, can be set to `None`. Max threshold for the stretch scalar.
+            min_sscale: (optional) default set is 0.5, can be set to `None`. Min threshold for the stretch scalar.
             isReScale: (bool) default to `True`,
                         whether re-scale the whole sampling grid.
 
@@ -18,7 +18,7 @@ class BDeformConv(nn.Module):
             An efficient and stable alternative of standard deformable convolution.
 
             hyper-parameters setting:
-                **optional** use the Tanh activation function to restrict the sketch scalar : [min_sscale,max_sscale]
+                **optional** use the Tanh activation function to restrict the stretch scalar : [min_sscale,max_sscale]
                 make training more stable
             and
                 whether apply re-scale operation to the whole sampling grid : isReScale
@@ -45,7 +45,7 @@ class BDeformConv(nn.Module):
 
         # for rotation，learn \sin \theta, \cos \theta (following a normalization operation)
         self.conv_rotation = nn.Conv2d(inc, 2, 3, 1, 1)
-        # learn a sketch scalar for h-dimension, which is restricted to [min_sscale, max_sscale]
+        # learn a stretch scalar for h-dimension, which is restricted to [min_sscale, max_sscale]
         self.conv_stretch = nn.Conv2d(inc, 1, 3, 1, 1)
 
         self.acti = nn.Tanh()
@@ -64,7 +64,7 @@ class BDeformConv(nn.Module):
         self.init_offset()
 
     def init_offset(self):
-        # set initial sketch scalar as 1
+        # set initial stretch scalar as 1
         nn.init.constant_(self.conv_stretch.weight, 0)
         if self.max_sscale is not None and self.min_sscale is not None:
             # Calculate bias for r=1
@@ -101,7 +101,7 @@ class BDeformConv(nn.Module):
         # (1, 1, 1, 2, k) -> (b, h, w, 2, k)
         base_offset = self.base_offset.to(x.dtype).expand(b, h, w, -1, -1)
         banded_offset = base_offset.clone()
-        # apply the sketch scalar for h-dimension
+        # apply the stretch scalar for h-dimension
         if self.max_sscale is not None and self.min_sscale is not None:
             r = self.acti(self.conv_stretch(x)) * self.a + self.b
         else:
