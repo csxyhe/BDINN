@@ -12,9 +12,12 @@ The implementation is **fully based on PyTorch**, making it easy to integrate an
 
 
 
-**suggestion given**: Setting larger scalar factors (hyper-parameter) may bring better performance in deeper layers of the CNN!
+### Requirements
 
-
+```bash
+torch>=1.9.0
+torchvision>=0.10.0
+```
 
 # Citation
 
