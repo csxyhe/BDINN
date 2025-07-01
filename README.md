@@ -14,7 +14,14 @@ The complete code is coming soon!
 
 **The implementation is fully based on PyTorch**, making it easy to integrate and use. Feel free to give it a try!
 
+### How to use
 
+- The module supports convolutional operations by utilizing **a non-square arrangement of sampling points**, allowing the `kernel_size` to be specified as either an integer or a tuple.
+
+- `min_sscale`/`max_sscale`: A pair of threshold for the stretch scalar.
+- `isRescale`: (bool) default to `True`.
+  - For non-local perception capacity: `True` is recommend. In theory, the magnification factor for the sampling interval can range from $[1, \infty]$.
+  - For stable training: `False` is recommend.
 
 
 ### Requirements
