@@ -1,11 +1,6 @@
-# Description
+The official implementation of ***Image debanding using cross-scale invertible networks with banded deformable convolutions (Neural Networks 2025)***.
 
-The complete code is coming soon!
-
-
-
-## what is shown now!
-
+## Description
 **A plug-and-play banded deformable convolutional layer** significantly reduces the number of learnable parameters compared to standard deformable convolutional layers, providing **a more efficient and stable alternative** for training.
  
  The receptive field at each position is modulated by a rotation scalar, a stretch factor, and an optional re-scale factor, resulting in a banded shape as follows:
