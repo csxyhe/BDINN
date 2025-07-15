@@ -3,16 +3,19 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.ops import deform_conv2d
 import thop
+import math
 
 
 class BDeformConv(nn.Module):
-    def __init__(self, inc, outc, kernel_size=3, stride=1, bias=None, max_sscale=3, min_sscale=0.5, isReScale=True):
+    def __init__(self, inc, outc, kernel_size=3, stride=1, bias=None, max_sscale=3, min_sscale=0.5, isReScale=True, init_angle=0):
         """
         args:
             max_sscale: (optional) default set is 3, can be set to `None`. Max threshold for the stretch scalar.
             min_sscale: (optional) default set is 0.5, can be set to `None`. Min threshold for the stretch scalar.
             isReScale: (bool) default to `True`,
                         whether re-scale the whole sampling grid.
+            init_angle: default to `0`, usually can be set to [0, 30, 45, 90].
+                        Initialize the rotation angle with the given value.                        
 
         descriptions:
             An efficient and stable alternative of standard deformable convolution.
@@ -65,6 +68,8 @@ class BDeformConv(nn.Module):
             # learn a scalar for the whole grid
             self.conv_whole = nn.Conv2d(inc, 1, 3, 1, 1)
 
+        self.init_angle = init_angle
+
         self.init_offset()
 
     def init_offset(self):
@@ -84,8 +89,8 @@ class BDeformConv(nn.Module):
             nn.init.constant_(self.conv_whole.bias, 0)
         # set initial rotation angle as 0
         nn.init.constant_(self.conv_rotation.weight, 0)
-        nn.init.constant_(self.conv_rotation.bias[0], 0)
-        nn.init.constant_(self.conv_rotation.bias[1], 1)
+        nn.init.constant_(self.conv_rotation.bias[0], math.sin(math.radians(self.init_angle)))
+        nn.init.constant_(self.conv_rotation.bias[1], math.cos(math.radians(self.init_angle)))
 
     def generate_base_points(self, kernel_size):
         kh, kw = kernel_size
