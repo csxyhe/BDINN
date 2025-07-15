@@ -17,6 +17,7 @@
 - `isRescale`: (bool) default to `True`.
   - For non-local perception capacity: `True` is recommend. In theory, the magnification factor for the sampling interval can range from $[1, \infty]$.
   - For stable training: `False` is recommend.
+- init_angle: default to `0`, usually can be set to [0, 30, 45, 90]. Initialize the rotation angle with the given value.
 
 
 ### Requirements
