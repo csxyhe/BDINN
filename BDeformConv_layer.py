@@ -7,11 +7,13 @@ import math
 
 
 class BDeformConv(nn.Module):
-    def __init__(self, inc, outc, kernel_size=3, stride=1, bias=None, max_sscale=3, min_sscale=0.5, isReScale=True, init_angle=0):
+    def __init__(self, inc, outc, kernel_size=3, stride=1, groups=1, bias=None, max_sscale=3, min_sscale=0.5, isReScale=True, init_angle=0):
         """
         args:
-            max_sscale: (optional) default set is 3, can be set to `None`. Max threshold for the stretch scalar.
-            min_sscale: (optional) default set is 0.5, can be set to `None`. Min threshold for the stretch scalar.
+            groups:     (int) default to be 1, although `torchvision.ops.deform_conv2d` doesn't explicitly provide a `groups` parameter, 
+                        it can automatically infer the number of groups from the shape of `weight`.
+            max_sscale: (optional) default to be 3, can be set to `None`. Max threshold for the stretch scalar.
+            min_sscale: (optional) default to be 0.5, can be set to `None`. Min threshold for the stretch scalar.
             isReScale: (bool) default to `True`,
                         whether re-scale the whole sampling grid.
             init_angle: default to `0`, usually can be set to [0, 30, 45, 90].
@@ -42,7 +44,7 @@ class BDeformConv(nn.Module):
         padding = ((kernel_size[0] - 1) // 2, (kernel_size[1] - 1) // 2)
         self.padding = padding
 
-        self.conv = nn.Conv2d(inc, outc, kernel_size=kernel_size, padding=padding, stride=stride, bias=bias)
+        self.conv = nn.Conv2d(inc, outc, kernel_size=kernel_size, padding=padding, stride=stride, bias=bias, groups=groups)
 
         base_points = self.generate_base_points(kernel_size)
         # (2, k)
