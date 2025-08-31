@@ -3,9 +3,10 @@
 ## Description
 **A plug-and-play banded deformable convolutional layer** significantly reduces the number of learnable parameters compared to standard deformable convolutional layers, providing **a more efficient and stable alternative** for training.
  
- The receptive field at each position is modulated by a rotation scalar, a stretch factor, and an optional re-scale factor, resulting in a banded shape as follows:
+ The receptive field at each position is modulated by a rotation scalar, a scaling factor, and an optional re-scale factor, resulting in a banded shape as follows:
 
 ![pic](https://github.com/csxyhe/BDINN/blob/img/receptiveField.png)
+For steady training, initialize all the elements of $\rho$ as 1.
 
 **The implementation is fully based on PyTorch**, making it easy to integrate and use. Feel free to give it a try!
 
@@ -13,7 +14,7 @@
 
 - The module supports convolutional operations by utilizing **a non-square arrangement of sampling points**, allowing the `kernel_size` to be specified as either an integer or a tuple.
 
-- `min_sscale`/`max_sscale`: A pair of threshold for the stretch scalar.
+- `min_sscale`/`max_sscale`: A pair of threshold for the scaling factor. If you would like to obtain a more flexible network, setting both of them as `None` is recommanded. Otherwise, pls treat them as hyper-parameters. Recommand to set `min_sscale` as 0.5 while setting `max_sscale` as 3.
 - `isRescale`: (bool) default to `True`.
   - For non-local perception capacity: `True` is recommend. In theory, the magnification factor for the sampling interval can range from $[1, \infty]$.
   - For stable training: `False` is recommend.
