@@ -6,7 +6,8 @@
  The receptive field at each position is modulated by a rotation scalar, a scaling factor, and an optional re-scale factor, resulting in a banded shape as follows:
 
 ![pic](https://github.com/csxyhe/BDINN/blob/img/receptiveField.png)
-For steady training, initialize all the elements of $\rho$ as 1.
+
+For steady training, initialize the scaling factor at each postion as 1 and the rotation angle at each position as 0 degree.
 
 **The implementation is fully based on PyTorch**, making it easy to integrate and use. Feel free to give it a try!
 
