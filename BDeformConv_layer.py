@@ -32,7 +32,8 @@ class BDeformConv(nn.Module):
         super(BDeformConv, self).__init__()
         assert (min_sscale is None and max_sscale is None) or (min_sscale is not None and max_sscale is not None), \
             "Both max_sscale and min_sscale must be set simultaneously or both must be None"
-        assert min_sscale < max_sscale, "max_sscale must be larger than min_sscale"
+        if min_sscale is not None and max_sscale is not None:
+            assert min_sscale < max_sscale, "max_sscale must be larger than min_sscale"
 
         if isinstance(stride, tuple):
             self.stride = stride
@@ -58,10 +59,11 @@ class BDeformConv(nn.Module):
         self.conv_stretch = nn.Conv2d(inc, 1, 3, 1, 1)
 
         self.acti = nn.Tanh()
-
+        
+        self.max_sscale = max_sscale
+        self.min_sscale = min_sscale
+        
         if max_sscale is not None and min_sscale is not None:
-            self.max_sscale = max_sscale
-            self.min_sscale = min_sscale
             self.a = (max_sscale - min_sscale) / 2
             self.b = (max_sscale + min_sscale) / 2
 
@@ -124,7 +126,7 @@ class BDeformConv(nn.Module):
         if self.max_sscale is not None and self.min_sscale is not None:
             r = self.acti(self.conv_stretch(x)) * self.a + self.b
         else:
-            r = self.conv_stretch(x)
+            r = F.relu(self.conv_stretch(x), inplace=False)
         # (b, H, W, 1)
         r = r.permute(0, 2, 3, 1)
         banded_offset[..., 0, :] *= r
@@ -150,3 +152,4 @@ if __name__ == "__main__":
     flops, params = thop.profile(model, inputs=(torch.randn(1, channel, height, width),), verbose=False)
     print(f"model FLOPs: {flops / (10 ** 9)}G")
     print(f"model Params: {params / (10 ** 6)}M")
+
